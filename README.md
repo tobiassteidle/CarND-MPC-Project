@@ -43,7 +43,7 @@ The waypoints are transformed into the vehicle perspective in advance. This simp
 
 To simulate real conditions an artificial latency of 100ms was added. To compensate for the latency, the current state of the kinematic model was calculated with delay.
 
-The following equation was used for this:
+The following equation was used for this:  
 Eigen::VectorXd state(6);  
 const double Lf = 2.67;  
 const double dt = 0.1;  
