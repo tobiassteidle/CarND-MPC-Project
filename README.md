@@ -24,12 +24,14 @@ delta: Steering angle
 a: Acceleration
 
 ##### The update equations are:
+```
 x_[t] = x[t-1] + v[t-1] * cos(psi[t-1]) * dt  
 y_[t] = y[t-1] + v[t-1] * sin(psi[t-1]) * dt  
 psi_[t] = psi[t-1] + v[t-1] / Lf * delta[t-1] * dt  
 v_[t] = v[t-1] + a[t-1] * dt  
 cte[t] = f(x[t-1]) - y[t-1] + v[t-1] * sin(epsi[t-1]) * dt  
 epsi[t] = psi[t] - psides[t-1] + v[t-1] * delta[t-1] / Lf * dt  
+```
 
 ### Timestep Length and Elapsed Duration (N & dt)
 
@@ -43,7 +45,8 @@ The waypoints are transformed into the vehicle perspective in advance. This simp
 
 To simulate real conditions an artificial latency of 100ms was added. To compensate for the latency, the current state of the kinematic model was calculated with delay.
 
-The following equation was used for this:  
+The following equation was used for this:
+```
 Eigen::VectorXd state(6);  
 const double Lf = 2.67;  
 const double dt = 0.1;  
@@ -56,7 +59,7 @@ const double delay_cte = cte + v * sin(epsi) * dt;
 const double delay_epsi = epsi + v * (-delta) / Lf * dt;  
 
 state << delay_px, delay_py, delay_psi, delay_v, delay_cte, delay_epsi;  
-
+```
 
 ---
 
