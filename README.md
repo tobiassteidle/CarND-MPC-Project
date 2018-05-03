@@ -17,7 +17,7 @@ y: Y position of the vehicle
 psi: orientation of the vehicle  
 v: Speed of the vehicle
 
-Additionally, the parameters cte (cross-track error) and epsi (psi error) are added.
+Additionally, the cte (cross-track error) and epsi (psi error) are added.
 
 ##### The actuators are:
 delta: Steering angle  
