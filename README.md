@@ -4,7 +4,7 @@ Self-Driving Car Engineer Nanodegree Program
 ## Video
 [![MPC](http://img.youtube.com/vi/H5Z6NXRMo2s/0.jpg)](http://www.youtube.com/watch?v=H5Z6NXRMo2s "MPC")
 
-## Rubic points
+## Rubric points
 
 ### The Model
 
