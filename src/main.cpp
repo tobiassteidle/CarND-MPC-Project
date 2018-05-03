@@ -122,15 +122,16 @@ int main() {
           // handle delay
           Eigen::VectorXd state(6);
           const double Lf = 2.67;
-          const double dt = 0.1;
-          const double current_px = 0.0 + v * dt;
-          const double current_py = 0.0;
-          const double current_psi = 0.0 + v * (-delta) / Lf * dt;
-          const double current_v = v + a * dt;
-          const double current_cte = cte + v * sin(epsi) * dt;
-          const double current_epsi = epsi + v * (-delta) / Lf * dt;
           
-          state << current_px, current_py, current_psi, current_v, current_cte, current_epsi;
+          const double dt = 0.1;
+          const double delay_px = v * dt;
+          const double delay_py = 0.0;
+          const double delay_psi = v * (-delta) / Lf * dt;
+          const double delay_v = v + a * dt;
+          const double delay_cte = cte + v * sin(epsi) * dt;
+          const double delay_epsi = epsi + v * (-delta) / Lf * dt;
+          
+          state << delay_px, delay_py, delay_psi, delay_v, delay_cte, delay_epsi;
 
           /*
            * TODO: Calculate steering angle and throttle using MPC.
@@ -180,7 +181,6 @@ int main() {
 
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
-
 
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
          // std::cout << msg << std::endl;

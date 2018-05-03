@@ -1,6 +1,63 @@
 # CarND-Controls-MPC
 Self-Driving Car Engineer Nanodegree Program
 
+## Video
+[![MPC](http://img.youtube.com/vi/H5Z6NXRMo2s/0.jpg)](http://www.youtube.com/watch?v=H5Z6NXRMo2s "MPC")
+
+## Rubic points
+
+### The Model
+
+A kinematic model is used in this project. The kinematic model is a simplification of a dynamic model and ignores tire forces, gravity and mass.  This reduces the accuracy of the models, but also makes them more comprehensible.
+At low and medium speeds, the driving dynamics of kinetic models often correspond to the actual driving dynamics.
+
+##### The kinematic model contains the following state:
+x: X position of the vehicle  
+y: Y position of the vehicle  
+psi: orientation of the vehicle  
+v: Speed of the vehicle
+
+Additionally, the parameters cte (cross-track error) and epsi (psi error) are added.
+
+##### The actuators are:
+delta: Steering angle  
+a: Acceleration
+
+##### The update equations are:
+x_[t] = x[t-1] + v[t-1] * cos(psi[t-1]) * dt  
+y_[t] = y[t-1] + v[t-1] * sin(psi[t-1]) * dt  
+psi_[t] = psi[t-1] + v[t-1] / Lf * delta[t-1] * dt  
+v_[t] = v[t-1] + a[t-1] * dt  
+cte[t] = f(x[t-1]) - y[t-1] + v[t-1] * sin(epsi[t-1]) * dt  
+epsi[t] = psi[t] - psides[t-1] + v[t-1] * delta[t-1] / Lf * dt  
+
+### Timestep Length and Elapsed Duration (N & dt)
+
+As final values for N and dt I have chosen 10 and 0.09. After several attempts I noticed that if the N value was too low, the vehicle did not plan far enough ahead and reacted too late to curves. If the value is too high, the vehicle can be planned relatively far into the future and requires more computing power. After a few tests, a value of 10 seemed to me to be a suitable average. If the dt is too low, the vehicle has already started to oscillate on the straight. If the dt is too high, the vehicle has oriented itself more towards the inside of the curve and has bent into the curve too early.
+
+### Polynomial Fitting and MPC Preprocessing
+
+The waypoints are transformed into the vehicle perspective in advance. This simplifies the adaptation of the polynomial to the waypoints, since x and y coordinates of the vehicle are at the origin (0, 0) and the orientation is also 0.
+
+### Model Predictive Control with Latency
+
+To simulate real conditions an artificial latency of 100ms was added. To compensate for the latency, the current state of the kinematic model was calculated with delay.
+
+The following equation was used for this:
+Eigen::VectorXd state(6);
+const double Lf = 2.67;  
+const double dt = 0.1;  
+
+const double delay_px = v * dt;  
+const double delay_py = 0.0;  
+const double delay_psi = v * (-delta) / Lf * dt;  
+const double delay_v = v + a * dt;  
+const double delay_cte = cte + v * sin(epsi) * dt;  
+const double delay_epsi = epsi + v * (-delta) / Lf * dt;  
+
+state << delay_px, delay_py, delay_psi, delay_v, delay_cte, delay_epsi;  
+
+
 ---
 
 ## Dependencies
@@ -60,49 +117,3 @@ using the following settings:
 ## Code Style
 
 Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/b1ff3be0-c904-438e-aad3-2b5379f0e0c3/concepts/1a2255a0-e23c-44cf-8d41-39b8a3c8264a)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
